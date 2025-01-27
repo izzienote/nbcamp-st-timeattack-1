@@ -20,18 +20,19 @@ function App() {
   };
 
   const handleOnChange = (e) => {
-    console.log(e.target.name);
     const { name, value } = e.target;
     setNewMedalLists({ ...newMedalList, [name]: value });
   };
 
   const handleAddBtn = (e) => {
     e.preventDefault();
+
     setMedalLists([...medalLists, newMedalList]);
     localStorage.setItem(
       "medalList",
       JSON.stringify([...medalLists, newMedalList])
     );
+
     resetForm();
   };
 
@@ -49,6 +50,7 @@ function App() {
     updateMedalList[valueIndex] = newMedalList;
     setMedalLists(updateMedalList);
     localStorage.setItem("medalList", JSON.stringify(updateMedalList));
+    resetForm();
   };
 
   const handleDeleteBtn = (country) => {
@@ -59,24 +61,22 @@ function App() {
     localStorage.setItem("medalList", JSON.stringify(updatedMedalList));
   };
 
-  console.log(medalLists);
   //정렬하기, 기본값 금메달순
   const [mode, setMode] = useState("sortByGold");
+
+  const handleMode = (e) => {
+    setMode(e.target.name);
+  };
 
   const sortMedalLists = () => {
     if (mode === "sortByGold") {
       return [...medalLists].sort((a, b) => b.gold - a.gold);
     }
     if (mode === "sortByTotal") {
-      alert("총메달순입니다");
       return [...medalLists].sort(
         (a, b) => b.gold + b.silver + b.bronze - (a.gold + a.silver + a.bronze)
       );
     }
-  };
-
-  const handleMode = (e) => {
-    setMedalLists(sortMedalLists());
   };
   return (
     <>
@@ -158,7 +158,7 @@ function App() {
             </tr>
           </thead>
           <tbody>
-            {medalLists.map((medalList) => (
+            {sortMedalLists().map((medalList) => (
               <tr key={medalList.country}>
                 <td>{medalList.country}</td>
                 <td>{medalList.gold}</td>
